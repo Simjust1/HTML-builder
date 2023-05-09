@@ -5,41 +5,52 @@ const outputFile = fs.createWriteStream(pathForBundle);
 const pathFromStyles = path.join(__dirname, 'styles');
 
 
-const ss = fs.readdir(pathFromStyles, {withFileTypes: true}).then (files => {
-  for (let file of files) {
-    if(file.isFile()) {
-      fs.readFile(path.join(__dirname, 'styles', file.name)).then (data => {
-        outputFile.write(data);
-      })
-    };
+const ss = fs.readdir(pathFromStyles, {withFileTypes: true} , (err, files) => {
+  if (err)
+        console.log(err);
+  else {
+    files.forEach(file => {
+      if(file.isFile() && (path.extname(file.name)) === '.css') {
+        fs.readFile(path.join(__dirname, 'styles', file.name), 'utf8', (err, data) => {
+          if (err) {
+            console.log(err)
+          }
+          else {
+            console.log(file.name);
+            console.log(data);
+            outputFile.write(data);
+          }
+
+        })
+      };
+    })
   }
 });
 
 
-
-
-
-
 /*
+ fs.stat(path.join(__dirname, 'styles', file.name),)
 
 
+fs.readFile(path.join(__dirname, 'styles', file.name)).then (data => {
+          outputFile.write(data);
+        })
 
 
+  const createFiles = () => {
+    fs.readdir(pathFromDir, (err, files) => {
+      if (err)
+        console.log(err);
+      else {
+        files.forEach(file => {
+          fs.copyFile(pathFromDir + '/' + file, pathForDir + '/' + file, (err) => {
+            if (err) {
+              console.log('error');
+            }
+          });
+        })
+      }
+    })
+  }
 
-
-
-
-  fs.mkdir(pathForDir, { recursive: true }, (err) => {
-    if (err) {
-        console.error(err);
-        return;
-    }
-  })
-
-  const ss = fs.readdir(pathFromDir, {withFileTypes: true}).then (data => {
-    for (let key of data) {
-      fs.copyFile(pathFromDir + '/' + key.name, pathForDir + '/' + key.name);
-    }
-  });
-*/
-
+ */
